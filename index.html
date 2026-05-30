@@ -1,1 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sympath — Understand Your Body's Signals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:        #2A9D8F;
+    --teal-dark:   #1f7a6e;
+    --teal-light:  #e4f4f2;
+    --teal-mid:    #b8e2de;
+    --bg:          #f4f4f2;
+    --bg-white:    #ffffff;
+    --chart-bg:    #2d3a3e;
+    --chart-grid:  rgba(255,255,255,0.07);
+    --green-wave:  #2ecc8a;
+    --text:        #1a1a1a;
+    --text-muted:  #6b7b7a;
+    --text-dim:    #aabab8;
+    --border:      #e0e8e7;
+    --border-teal: #2A9D8F;
+    --red:         #e57373;
+    --red-light:   #fdecea;
+    --sans:        'DM Sans', sans-serif;
+    --script:      'Lobster', cursive;
+    --mono:        'DM Mono', monospace;
+    --radius-pill: 100px;
+    --radius-card: 14px;
+    --radius-sm:   8px;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--teal);
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    box-shadow: 0 2px 12px rgba(61,173,160,0.25);
+  }
+
+  .nav-logo {
+    font-family: var(--script);
+    font-size: 28px;
+    color: #fff;
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .nav-links { display: flex; align-items: center; gap: 8px; list-style: none; }
+
+  .nav-links a {
+    font-size: 13px; font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    padding: 7px 16px;
+    border-radius: var(--radius-pill);
+    transition: background 0.18s, color 0.18s;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links a:hover { background: rgba(255,255,255,0.18); color: #fff; }
+
+  .nav-cta {
+    background: #fff !important;
+    color: var(--teal) !important;
+    font-weight: 500 !important;
+  }
+  .nav-cta:hover { background: rgba(255,255,255,0.9) !important; }
+
+  /* ── CONTAINER ── */
+  .container { max-width: 1060px; margin: 0 auto; padding: 0 32px; }
+  section { position: relative; }
+
+  /* ── HERO ── */
+  #home {
+    background: var(--teal);
+    padding-top: 64px;
+    min-height: 480px;
+    display: flex; flex-direction: column;
+  }
+
+  .hero-teal {
+    padding: 72px 32px 56px;
+    text-align: center;
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    max-width: 1060px; margin: 0 auto; width: 100%;
+  }
+
+  .hero-wordmark {
+    font-family: var(--script);
+    font-size: clamp(56px, 10vw, 96px);
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .hero-tagline {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: rgba(255,255,255,0.88);
+    font-weight: 300;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-support {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+  }
+
+  .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-white {
+    font-size: 14px; font-weight: 500;
+    padding: 13px 32px;
+    background: #fff; color: var(--teal);
+    border: none; border-radius: var(--radius-pill);
+    cursor: pointer; text-decoration: none;
+    transition: opacity 0.18s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-white:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-outline-white {
+    font-size: 14px; font-weight: 400;
+    padding: 12px 32px;
+    background: transparent; color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.6);
+    border-radius: var(--radius-pill);
+    cursor: pointer; text-decoration: none;
+    transition: background 0.18s, border-color 0.18s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,0.15); border-color: #fff; transform: translateY(-1px); }
+
+  /* Hero chart card */
+  .hero-card-wrap {
+    background: var(--bg);
+    padding: 48px 32px;
+  }
+
+  .hero-card {
+    max-width: 760px; margin: 0 auto;
+    background: var(--bg-white);
+    border: 1.5px solid var(--border-teal);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .card-topbar {
+    background: var(--teal);
+    padding: 10px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .card-topbar-left { font-size: 13px; color: rgba(255,255,255,0.9); }
+  .card-topbar-left span { font-weight: 500; color: #fff; }
+  .card-topbar-right { font-size: 12px; color: rgba(255,255,255,0.8); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .card-tabs {
+    display: flex; gap: 10px; padding: 14px 16px 0;
+  }
+
+  .tab {
+    font-size: 13px; font-weight: 500;
+    padding: 8px 24px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--teal);
+    background: var(--teal); color: #fff;
+    cursor: default;
+  }
+  .tab.inactive { background: transparent; color: var(--teal); }
+
+  .card-status {
+    padding: 10px 16px 4px;
+    font-size: 13px; color: var(--green-wave);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .card-status::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green-wave);
+    animation: blink 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .card-data {
+    margin: 10px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 4px 24px;
+    font-size: 14px;
+  }
+  .card-data-row { color: var(--text); }
+  .card-data-row span { color: var(--text-muted); font-size: 13px; }
+
+  /* Chart area */
+  .chart-area {
+    margin: 14px 16px 16px;
+    background: var(--chart-bg);
+    border-radius: var(--radius-sm);
+    position: relative;
+    overflow: hidden;
+    height: 160px;
+  }
+
+  .chart-label {
+    position: absolute; top: 10px; right: 12px;
+    font-family: var(--mono); font-size: 12px; color: var(--green-wave);
+    z-index: 2;
+  }
+
+  .chart-svg { width: 100%; height: 100%; display: block; }
+
+  .ppg-wave {
+    stroke-dasharray: 1200;
+    stroke-dashoffset: 1200;
+    animation: drawWave 2.4s ease forwards 0.4s;
+  }
+  @keyframes drawWave { to { stroke-dashoffset: 0; } }
+
+  .chart-time {
+    display: flex; justify-content: space-between;
+    padding: 4px 16px 14px;
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+  }
+
+  /* ── SECTION SHARED ── */
+  .section-tag {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--teal);
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 300; letter-spacing: -0.02em;
+    line-height: 1.15; margin-bottom: 14px;
+    color: var(--text);
+  }
+
+  .section-intro {
+    font-size: 15px; color: var(--text-muted);
+    font-weight: 300; max-width: 540px;
+    line-height: 1.75; margin-bottom: 52px;
+  }
+
+  /* ── MISSION ── */
+  #mission {
+    padding: 100px 0;
+    background: var(--teal);
+    border-top: 1px solid var(--border);
+  }
+
+  .mission-inner {
+    max-width: 720px;
+  }
+
+  #mission .section-tag {
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 24px;
+  }
+
+  .mission-text p {
+    font-size: 17px;
+    color: rgba(255,255,255,0.88);
+    font-weight: 300;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .mission-text p:last-child { margin-bottom: 0; }
+
+  /* ── FEATURES ── */
+  #features { padding: 100px 0; background: var(--bg-white); border-top: 1px solid var(--border); }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .feature {
+    background: var(--bg-white);
+    padding: 32px 28px;
+    transition: background 0.18s;
+  }
+  .feature:hover { background: var(--teal-light); }
+
+  .feature-icon {
+    width: 32px; height: 32px; margin-bottom: 16px; color: var(--teal);
+  }
+
+  .feature h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .feature p { font-size: 13px; color: var(--text-muted); line-height: 1.65; font-weight: 300; }
+
+  /* Use case pills */
+  .use-cases { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 52px; }
+
+  .use-case-pill {
+    font-size: 13px; font-weight: 400;
+    padding: 8px 20px;
+    border: 1.5px solid var(--teal);
+    border-radius: var(--radius-pill);
+    color: var(--teal);
+    background: transparent;
+    transition: background 0.18s, color 0.18s;
+    cursor: default;
+  }
+  .use-case-pill:hover { background: var(--teal); color: #fff; }
+
+  /* ── HOW IT WORKS ── */
+  #screenshots { padding: 100px 0; background: var(--bg); border-top: 1px solid var(--border); }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+
+  .step-card {
+    background: var(--bg-white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 28px 24px;
+    transition: border-color 0.18s;
+  }
+  .step-card:hover { border-color: var(--teal); }
+
+  .step-num {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--teal); letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+
+  .step-card h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .step-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; font-weight: 300; }
+
+  /* Screenshot mockup row */
+  .mockup-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 20px; margin-top: 56px;
+  }
+
+  .mockup-frame {
+    background: var(--bg-white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .mockup-header {
+    background: var(--teal); padding: 10px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mockup-header-text { font-size: 12px; color: #fff; font-weight: 500; }
+  .mockup-header-sub { font-size: 10px; color: rgba(255,255,255,0.7); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .mockup-body { padding: 14px; }
+
+  .mockup-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+  .mockup-tab {
+    font-size: 11px; font-weight: 500; padding: 5px 14px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--teal);
+    color: var(--teal); background: transparent;
+  }
+  .mockup-tab.active { background: var(--teal); color: #fff; }
+  .mockup-tab.stop { border-color: var(--red); color: var(--red); }
+
+  .mockup-status { font-size: 11px; color: var(--green-wave); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .mockup-status::before { content:''; width:6px; height:6px; border-radius:50%; background: var(--green-wave); flex-shrink:0; }
+
+  .mockup-data-box {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; margin-bottom: 10px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+    font-size: 11px; color: var(--text);
+  }
+
+  .mockup-chart {
+    background: var(--chart-bg);
+    border-radius: 6px; height: 80px;
+    position: relative; overflow: hidden;
+  }
+
+  .mockup-chart-label {
+    position: absolute; top: 6px; right: 8px;
+    font-family: var(--mono); font-size: 9px; color: var(--green-wave);
+  }
+
+  /* Clinical event mockup */
+  .mockup-file-box {
+    border: 1.5px solid var(--teal); border-radius: 8px;
+    padding: 10px 12px; margin-bottom: 10px;
+  }
+  .mockup-file-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
+  .mockup-file-name { font-size: 11px; font-weight: 500; color: var(--text); }
+
+  .mockup-event-list { margin-bottom: 10px; }
+  .mockup-event-row { font-size: 11px; color: var(--text-muted); padding: 3px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+  .mockup-event-row span { color: var(--text); }
+
+  .mockup-event-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .mockup-event-btn {
+    font-size: 11px; font-weight: 500; width: 32px; height: 32px;
+    border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center;
+  }
+  .mockup-event-btn.active { background: var(--teal); color: #fff; }
+  .mockup-event-btn.inactive { background: #ccc; color: #fff; }
+
+  /* Files mockup */
+  .mockup-file-list { display: flex; flex-direction: column; gap: 8px; }
+  .mockup-file-item {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+    font-size: 11px;
+  }
+  .mockup-file-item.selected { border-color: var(--teal); background: var(--teal-light); }
+  .mockup-file-num { color: var(--text-dim); width: 14px; flex-shrink: 0; }
+  .mockup-file-info {}
+  .mockup-file-name2 { font-weight: 500; color: var(--text); font-size: 10px; }
+  .mockup-file-meta { color: var(--text-dim); font-size: 10px; }
+
+  /* ── FAQ ── */
+  #faq { padding: 100px 0; background: var(--bg-white); border-top: 1px solid var(--border); }
+
+  .faq-list { border: 1.5px solid var(--border); border-radius: var(--radius-card); overflow: hidden; }
+
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-item:last-child { border-bottom: none; }
+
+  .faq-q {
+    width: 100%; background: none; border: none;
+    padding: 22px 24px; text-align: left; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    font-family: var(--sans); font-size: 15px; font-weight: 400; color: var(--text);
+    transition: background 0.15s;
+  }
+  .faq-q:hover { background: var(--teal-light); }
+
+  .faq-q .faq-icon {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid var(--teal); color: var(--teal);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform 0.2s, background 0.2s;
+  }
+  .faq-item.open .faq-q .faq-icon { transform: rotate(45deg); background: var(--teal); color: #fff; }
+
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s;
+    padding: 0 24px; font-size: 14px; color: var(--text-muted);
+    line-height: 1.7; font-weight: 300;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding: 0 24px 22px; }
+
+  /* ── EARLY ACCESS ── */
+  #early-access { padding: 100px 0; background: var(--bg); border-top: 1px solid var(--border); }
+
+  .access-box {
+    background: var(--teal);
+    border-radius: var(--radius-card);
+    padding: 64px 48px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+
+  .access-box h2 { color: #fff; margin-bottom: 12px; }
+  .access-box .section-intro { color: rgba(255,255,255,0.78); margin: 0 auto 36px; }
+
+  .signup-form { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
+
+  .signup-form input {
+    flex: 1; background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: var(--radius-pill);
+    padding: 13px 22px;
+    font-family: var(--sans); font-size: 14px; color: #fff; outline: none;
+    transition: border-color 0.2s;
+  }
+  .signup-form input::placeholder { color: rgba(255,255,255,0.55); }
+  .signup-form input:focus { border-color: #fff; }
+
+  .form-note {
+    font-size: 12px; color: rgba(255,255,255,0.55);
+    margin-top: 14px; letter-spacing: 0.03em;
+  }
+
+  /* ── CONTACT ── */
+  #contact { padding: 100px 0; background: var(--bg-white); border-top: 1px solid var(--border); }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 12px; }
+
+  .contact-form input, .contact-form textarea {
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 13px 22px;
+    font-family: var(--sans); font-size: 14px; color: var(--text); outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  .contact-form textarea { border-radius: var(--radius-card); min-height: 120px; }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color: var(--text-dim); }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--teal); }
+
+  .btn-teal {
+    font-size: 14px; font-weight: 500;
+    padding: 13px 32px; background: var(--teal); color: #fff;
+    border: none; border-radius: var(--radius-pill);
+    cursor: pointer; text-decoration: none;
+    transition: opacity 0.18s, transform 0.15s; display: inline-block;
+    align-self: flex-start;
+  }
+  .btn-teal:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .contact-info p {
+    font-size: 15px; color: var(--text-muted);
+    line-height: 1.75; font-weight: 300; margin-bottom: 28px;
+  }
+
+  .data-promise {
+    background: var(--teal-light);
+    border: 1.5px solid var(--teal-mid);
+    border-left: 3px solid var(--teal);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+  }
+  .data-promise-label {
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 5px; font-weight: 500;
+  }
+  .data-promise p { font-size: 13px; color: var(--text-muted); margin: 0; line-height: 1.6; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--teal); padding: 28px 0;
+  }
+  .footer-inner {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .footer-logo { font-family: var(--script); font-size: 22px; color: #fff; }
+  .footer-note { font-size: 12px; color: rgba(255,255,255,0.65); letter-spacing: 0.03em; }
+
+  /* ── FADE IN ── */
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .container { padding: 0 16px; }
+    .hero-teal { padding: 56px 16px 40px; }
+    .hero-card-wrap { padding: 32px 16px; }
+    .features-grid, .steps, .mockup-row, .contact-grid { grid-template-columns: 1fr; }
+    .access-box { padding: 40px 20px; }
+    .signup-form { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">Sympath</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#screenshots">How it works</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hero-teal">
+    <div class="hero-wordmark">Sympath</div>
+    <p class="hero-tagline">Understand your body's signals.</p>
+    <p class="hero-support">Real-time physiological data for research and discovery. Stream continuous signals with high-quality visualization, recording, and export tools designed for research.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-white">Get in touch</a>
+      <a href="#features" class="btn-outline-white">See features</a>
+    </div>
+  </div>
+
+  <!-- App video -->
+  <div class="hero-card-wrap">
+    <div class="hero-video-wrap fade-in">
+      <video
+        src="images/video_ppgwave.mp4"
+        autoplay
+        muted
+        loop
+        playsinline
+        style="width:100%;border-radius:var(--radius-card);display:block;box-shadow:0 4px 32px rgba(0,0,0,0.12);">
+      </video>
+    </div>
+  </div>
+
+</section>
+
+<!-- MISSION -->
+<section id="mission">
+  <div class="container">
+    <div class="mission-inner fade-in">
+      <div class="section-tag">Our Mission</div>
+      <div class="mission-text">
+        <p>Continuous physiological monitoring outside specialized settings is still new, and what it might reveal about health and disease remains an open question. Answering that question requires data — high quality signals from real people, across real conditions.</p>
+        <p>We believe progress in the science and applications of continuous physiological monitoring depends on participation, not gatekeeping. Sympath exists to provide open, affordable tools for researchers, clinicians, and individuals — and to build toward something with the potential for widespread impact: an open, representative database of physiological signals.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-tag fade-in">Features</div>
+    <h2 class="fade-in">Research-grade tools.<br>Consumer simplicity.</h2>
+    <p class="section-intro fade-in">Sympath connects to Health Canada licensed (MDL) and FDA cleared devices, giving you unprecedented access to raw physiological signals — no cloud required.</p>
+    <div class="features-grid fade-in">
+      <div class="feature">
+        <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+          <polyline points="2,24 7,16 12,20 18,7 23,13 30,4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Continuous PPG waveform</h3>
+        <p>Visualize raw PPG data in real time. Access the full waveform — not just summary stats — for every heartbeat.</p>
+      </div>
+      <div class="feature">
+        <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M16 9v7l4 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Live metrics</h3>
+        <p>SpO₂, pulse rate, and motion — all streaming live from your connected device.</p>
+      </div>
+      <div class="feature">
+        <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+          <rect x="3" y="5" width="26" height="22" rx="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M3 12h26" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 18h5M10 22h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Clinical event logger</h3>
+        <p>Record important events — medication, activity, symptoms — with timestamped, user-defined codes.</p>
+      </div>
+      <div class="feature">
+        <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+          <path d="M5 27V17M10 27V11M15 27V19M20 27V7M25 27V15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>CSV export</h3>
+        <p>Export PPG recordings and clinical logs as CSV files. Bring your data into Python, R, MATLAB, or any research environment you use.</p>
+      </div>
+      <div class="feature">
+        <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+          <rect x="3" y="3" width="26" height="26" rx="13" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M16 10v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="16" cy="20" r="1.5" fill="currentColor"/>
+        </svg>
+        <h3>Local data storage</h3>
+        <p>Nothing leaves your device without your explicit action. Your physiological data is stored locally.</p>
+      </div>
+      <div class="feature">
+        <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="10" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 16 C12 13 14 11 16 13 C18 15 20 17 21 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h3>Hardware</h3>
+        <p>Available in fingertip and ring-form sensors, compatible devices are Health Canada licensed (MDL) and FDA cleared pulse oximeters.</p>
+      </div>
+    </div>
+
+
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="screenshots">
+  <div class="container">
+    <div class="section-tag fade-in">How it works</div>
+    <h2 class="fade-in">Up and running in minutes.</h2>
+    <p class="section-intro fade-in">No complex setup. No cloud accounts. Connect, visualize, record, and export.</p>
+    <div class="steps fade-in">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3>Connect your device</h3>
+        <p>Connect a Sympath-compatible pulse oximeter to your Android phone or tablet.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3>Visualize &amp; record</h3>
+        <p>Watch your PPG waveform, SpO₂, pulse, and motion data stream live. Start recording with one tap and log clinical events as they happen.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3>Export &amp; analyse</h3>
+        <p>Export your data as CSV files. PPG recordings and clinical event logs are stored independently, ready for your analysis pipeline.</p>
+      </div>
+    </div>
+
+    <!-- App screenshots -->
+    <div class="mockup-row fade-in">
+      <div class="screenshot-frame">
+        <img src="images/screenshot_ppg.png" alt="Sympath PPG waveform screen showing live recording" style="width:100%;border-radius:var(--radius-card);display:block;">
+      </div>
+      <div class="screenshot-frame">
+        <img src="images/screenshot_clinical.png" alt="Sympath clinical event logger screen" style="width:100%;border-radius:var(--radius-card);display:block;">
+      </div>
+      <div class="screenshot-frame">
+        <img src="images/screenshot_files.png" alt="Sympath files and export screen" style="width:100%;border-radius:var(--radius-card);display:block;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-tag fade-in">FAQ</div>
+    <h2 class="fade-in">Common questions.</h2>
+    <p class="section-intro fade-in">Anything else? Reach out via the contact form below.</p>
+    <div class="faq-list fade-in">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Who is Sympath for?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">Sympath is built for researchers and expert consumers — anyone who wants access to high-quality raw physiological data rather than simplified summaries from consumer wearables.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What hardware does Sympath use?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">Sympath works with Viatom pulse oximeters — Health Canada licensed and FDA cleared devices. Sympath-compatible devices are available in two forms — fingertip sensors are an economical option designed for shorter recording sessions, and ring-form sensors are designed for increased comfort during extended recording sessions. They connect via Bluetooth to any Android phone or tablet. To ensure compatibility and support, devices must be purchased through Sympath.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I log clinical events without a connected device?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">Yes — the clinical event logger works independently of any device connection. You can create and export clinical logs without a Sympath-compatible pulse oximeter connected, making it useful as a standalone timestamped event diary even outside of a PPG recording session.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is my data private?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">Yes — completely. All recordings are stored locally on your device. Nothing is transmitted to our servers. You control your data entirely, and exports are initiated only by you.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What does Sympath export?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">PPG waveform data is recorded along with SpO₂, pulse rate, motion (accelerometer), perfusion index (PI), wear status, beat marker, and device battery level. Timestamped clinical event data may be logged contemporaneously in a separate file during PPG recordings. All files are exported in CSV format.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I record PPG and raw optical data simultaneously?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">No — Sympath operates in two recording modes: PPG mode, which captures the processed waveform, and Raw mode, which captures the raw optical data (IR and Red channels). Only one mode can be active at a time. In both modes, clinical metrics including SpO₂, pulse rate, and motion are available, though their characteristics differ between modes. Clinical event logs can be recorded simultaneously with either mode.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How does data collection differ between PPG and Raw mode?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">The two modes differ in both waveform sampling rate and the frequency at which clinical metrics are reported. In PPG mode, the processed waveform is sampled at 125 Hz and clinical metrics (SpO₂, pulse rate, motion, and others) are reported at 4 Hz. In Raw mode, the optical data is sampled at 150 Hz and clinical metrics are reported at 1 Hz.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          When will Sympath be available?
+          <span class="faq-icon"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 1v8M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-a">Sympath is planned for launch toward the end of 2026 or early 2027. Get in touch if you'd like to be notified when Sympath becomes available.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info fade-in">
+        <div class="section-tag">Contact</div>
+        <h2>Get in touch.</h2>
+        <p>Sympath is an independent Canadian health technology project, developed in the sunny Okanagan, British Columbia. It was built by a practicing physician and data scientist with experience in clinical research.</p>
+        <p>Questions? We'd love to hear from you.</p>
+
+      </div>
+      <form class="contact-form fade-in" action="https://formspree.io/f/xdajvozz" method="POST">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <textarea name="message" placeholder="Your message" required></textarea>
+        <button type="submit" class="btn-teal" id="contact-btn">Send message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <span class="footer-logo">Sympath</span>
+      <span class="footer-note">© 2025 Sympath. All rights reserved.</span>
+    </div>
+    <p style="margin-top:20px;font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;text-align:center;">
+      Sympath is intended for research and informational purposes only. It is not intended to diagnose, treat, cure, or prevent any disease or medical condition. Always consult a qualified healthcare professional for medical advice.
+    </p>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  function handleSignup(e) {
+    e.preventDefault();
+    const msg = document.getElementById('signup-msg');
+    msg.textContent = "You're on the list — we'll be in touch!";
+    msg.style.color = '#fff';
+    document.getElementById('email-input').value = '';
+  }
+
+
+</script>
+</body>
+</html>
