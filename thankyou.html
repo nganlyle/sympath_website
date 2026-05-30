@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank you — Sympath</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lobster&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #2A9D8F;
+    --teal-dark: #1f7a6e;
+    --teal-light: #e4f4f2;
+    --sans: 'DM Sans', sans-serif;
+    --script: 'Lobster', cursive;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--teal);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    text-align: center;
+  }
+
+  .wordmark {
+    font-family: var(--script);
+    font-size: 48px;
+    color: #fff;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 48px 40px;
+    max-width: 480px;
+    width: 100%;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.3s;
+  }
+
+  .icon {
+    width: 56px;
+    height: 56px;
+    background: var(--teal-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .icon svg {
+    color: var(--teal);
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    font-size: 15px;
+    color: #6b7b7a;
+    line-height: 1.7;
+    font-weight: 300;
+    margin-bottom: 32px;
+  }
+
+  a {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px 32px;
+    background: var(--teal);
+    color: #fff;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: opacity 0.18s, transform 0.15s;
+  }
+
+  a:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wordmark">Sympath</div>
+
+  <div class="card">
+    <div class="icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1>Message received.</h1>
+    <p>Thank you for getting in touch. We'll get back to you as soon as possible.</p>
+    <a href="https://sympath.ca">Back to Sympath</a>
+  </div>
+
+</body>
+</html>
