@@ -810,12 +810,22 @@
         <p>Questions? We'd love to hear from you.</p>
 
       </div>
-      <form class="contact-form fade-in" action="https://formspree.io/f/xdajvozz" method="POST">
-        <input type="hidden" name="_next" value="https://sympath.ca/thankyou.html">
+      <div id="contact-success" style="display:none;" class="fade-in">
+        <div style="background:var(--teal-light);border:1.5px solid var(--teal-mid);border-left:3px solid var(--teal);border-radius:var(--radius-card);padding:32px;text-align:center;">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style="margin:0 auto 16px;display:block;">
+            <circle cx="20" cy="20" r="19" stroke="var(--teal)" stroke-width="1.5"/>
+            <path d="M12 20l5 5 11-10" stroke="var(--teal)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p style="font-size:16px;font-weight:500;color:var(--text);margin-bottom:6px;">Message received.</p>
+          <p style="font-size:14px;color:var(--text-muted);font-weight:300;">Thank you for getting in touch. We'll get back to you as soon as possible.</p>
+        </div>
+      </div>
+      <form class="contact-form fade-in" id="contact-form">
         <input type="text" name="name" placeholder="Your name" required>
         <input type="email" name="email" placeholder="Your email" required>
         <textarea name="message" placeholder="Your message" required></textarea>
         <button type="submit" class="btn-teal" id="contact-btn">Send message</button>
+        <p id="contact-error" style="display:none;font-size:13px;color:var(--red);margin-top:4px;">Something went wrong — please try again.</p>
       </form>
     </div>
   </div>
@@ -835,6 +845,40 @@
 </footer>
 
 <script>
+  // Contact form — Ajax submission to Formspree
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('contact-btn');
+      const error = document.getElementById('contact-error');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+      error.style.display = 'none';
+      try {
+        const response = await fetch('https://formspree.io/f/xdajvozz', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(contactForm)
+        });
+        if (response.ok) {
+          contactForm.style.display = 'none';
+          const success = document.getElementById('contact-success');
+          success.style.display = 'block';
+          success.classList.add('visible');
+        } else {
+          error.style.display = 'block';
+          btn.textContent = 'Send message';
+          btn.disabled = false;
+        }
+      } catch {
+        error.style.display = 'block';
+        btn.textContent = 'Send message';
+        btn.disabled = false;
+      }
+    });
+  }
+
   function toggleFaq(btn) {
     const item = btn.closest('.faq-item');
     const isOpen = item.classList.contains('open');
